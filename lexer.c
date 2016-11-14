@@ -36,12 +36,22 @@ static inline int is_digit(int c)
 
 static inline int is_alphanum(int c)
 {
-    
+    return is_letter(c) || is_digit(c);
     }
 
-static inline int is_ident_start()
-{
+    static inline int is_ident_special(int c)
+    {
+        return (c == '$') || (c == '_');
+    }
     
+static inline int is_ident_start(int c)
+{
+    return is_letter(c) || is_ident_special(c);
+}
+
+static inline int is_ident(int c)
+{
+    return is_alphanum(c) || is_ident_special(c);
 }
 
 LexResult lex_file(const char *path)
@@ -162,10 +172,30 @@ LexResult lex_file_data(char *data, const char *filename)
             continue;
         }
         
+        if(is_ident_start(*ptr)) {
+            char *start = ptr;
+            while(*ptr && is_ident(*ptr)) {
+                ptr++;
+            }
+            
+            int len = ptr - start;
+            char *str = (char*) malloc(sizeof(char)*(len+1));
+            memcpy(str, start, len);
+            str[len] = 0;
+            
+            Token t = make_token(TOKEN_IDENT);
+            t.value = str;
+            x += len;
+            result_add_token(&result, t);
+            continue;
+        }
+        
         printf("%s:%d:%d: Unknown token '%c' 0x%X\n", result.filename, line, x, *ptr, *ptr);
         ptr++;
         x++;
     }
+    
+    result_add_token(&result, make_token(TOKEN_EOF));
     
     return result;
 }
@@ -203,6 +233,7 @@ const char* get_token_name(TokenType type)
         TOKEN(TOKEN_SLASH);
         TOKEN(TOKEN_EQUALS);
         TOKEN(TOKEN_NEQUALS);
+        TOKEN(TOKEN_EOF);
         #undef TOKEN
     }
     

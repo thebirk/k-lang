@@ -40,6 +40,8 @@ ENUM(int, TokenType)
     TOKEN_SLASH,
     TOKEN_EQUALS,
     TOKEN_NEQUALS,
+    
+    TOKEN_EOF,
 };
 
 STRUCT(Token)
