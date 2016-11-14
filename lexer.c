@@ -16,14 +16,6 @@ static inline Token make_token_(TokenType type, int line, int x, char *filename)
     return (Token){type, filename, line, x, 0};
 }
 
-static inline Token make_token_val(TokenType type, char *value, int len)
-{
-    char *val = malloc(len);
-    memcpy(val, value, len);
-    
-    return (Token){type, val};
-};
-
 static inline int is_letter(int c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c  <= 'Z');
@@ -31,7 +23,7 @@ static inline int is_letter(int c)
 
 static inline int is_digit(int c)
 {
-    return (c <= '0' && c >= '9');
+    return (c >= '0' && c <= '9');
 }
 
 static inline int is_alphanum(int c)
@@ -52,6 +44,11 @@ static inline int is_ident_start(int c)
 static inline int is_ident(int c)
 {
     return is_alphanum(c) || is_ident_special(c);
+}
+
+static inline int is_num(int c)
+{
+    is_digit(c) || (c == '.');
 }
 
 LexResult lex_file(const char *path)
@@ -123,7 +120,7 @@ LexResult lex_file_data(char *data, const char *filename)
             continue;\
         }
         
-        DOUBLE_TOKEN('!', '=', TOKEN_NEQUALS);
+        DOUBLE_TOKEN('!', '=', TOKEN_NEQUALS)
         
 #undef DOUBLE_TOKEN
         
@@ -190,12 +187,64 @@ LexResult lex_file_data(char *data, const char *filename)
             continue;
         }
         
+        if(is_num(*ptr)) {
+            int found_dot = 0;
+            if(*ptr == '.') found_dot = 1;
+            
+            // TODO: Handle '0x' hexadecimals
+            
+            char *start = ptr;
+            while(*ptr && is_num(*ptr)) {
+                if(*ptr == '.') {
+                    if(found_dot) {
+                        printf("%s:%d:%d: Found second '.' while parsing number!\n", result.filename, line, x);
+                        exit(-1);
+                    } else {
+                        found_dot = 1;
+                    }
+                }
+                ptr++;
+            }
+            
+            int len = ptr - start;
+            char *str = (char*) malloc(sizeof(char)*(len+1));
+            memcpy(str, start, len);
+            str[len] = 0;
+            
+            Token t = make_token(TOKEN_INTEGER);
+            t.value = str;
+            x += len;
+            result_add_token(&result, t);
+            continue;
+        }
+        
         printf("%s:%d:%d: Unknown token '%c' 0x%X\n", result.filename, line, x, *ptr, *ptr);
         ptr++;
         x++;
     }
     
     result_add_token(&result, make_token(TOKEN_EOF));
+    
+    // Handle keywords
+    for(int i = 0; i < result.size; i++) {
+        Token *t = &result.tokens[i];
+        
+        if(t->type == TOKEN_IDENT) {
+            if(strcmp("func", t->value) == 0) {
+                t->type = TOKEN_FUNC;
+                free(t->value);
+                continue;
+            }
+#define KEYWORD(str, _type) else if(strcmp(str, t->value) == 0) { t->type = _type; free(t->value); continue; }
+            KEYWORD("true", TOKEN_TRUE)
+                KEYWORD("false", TOKEN_FALSE)
+                KEYWORD("if", TOKEN_IF)
+                KEYWORD("while", TOKEN_WHILE)
+                KEYWORD("struct", TOKEN_STRUCT)
+                KEYWORD("return", TOKEN_RETURN)
+            #undef KEYWORD
+        }
+    }
     
     return result;
 }
@@ -234,6 +283,7 @@ const char* get_token_name(TokenType type)
         TOKEN(TOKEN_EQUALS);
         TOKEN(TOKEN_NEQUALS);
         TOKEN(TOKEN_EOF);
+        TOKEN(TOKEN_RETURN);
         #undef TOKEN
     }
     

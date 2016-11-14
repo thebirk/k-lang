@@ -32,6 +32,7 @@ ENUM(int, TokenType)
     TOKEN_WHILE,
     TOKEN_SWITCH,
     TOKEN_STRUCT,
+    TOKEN_RETURN,
     
     // Operators
     TOKEN_PLUS,

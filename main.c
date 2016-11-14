@@ -24,7 +24,9 @@ int main(int argc, char **argv)
             printf(": %s\n", t.value);
         } else if(t.type == TOKEN_IDENT) {
             printf(": %s\n", t.value);
-        } else {
+        } else if(t.type == TOKEN_INTEGER) {
+            printf(": %s\n", t.value);
+         } else {
             printf("\n");
         }
     }
