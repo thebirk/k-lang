@@ -1,0 +1,116 @@
+// #import "std"
+
+/*
+
+'.' = Scope modifier
+	
+	Used to select a scope
+	If there are multiple "things" with the same name in available
+	namespaces then the closest one will be used
+	In a function (also struct methods) you can use a single '.'
+	to refer to local variables as arguments will have a higher
+	priority
+	
+	Ex:
+		struct SomeStrct 
+		{
+			age: int;
+			
+			init(age: int)
+			{
+				.age = age;
+			}
+		}
+
+		If you didnt use '.' in this example the compiler would
+		see that as if you were trying to modify the arguments
+		which is not allowed.
+
+	Ex.2:
+		namespace ns
+		{
+			func say_hi()
+			{
+				printf("Hi!");
+			}
+		}
+
+		func main()
+		{
+			ns.say_hi();
+		}
+
+*/
+
+
+struct String
+{
+	str: *s8;
+	len: u32;
+
+	init(str: *s8) {
+		.str = str;
+		len = 0;
+		while(*str++) {
+			len++;
+		}
+	}
+
+	append(str: *s8) {
+		// TODO: Implement this
+	}
+}
+
+struct SomeData
+{
+	age: int;
+	name: *s8;
+
+	init(age: int, name: *s8) {
+		.age = age;
+		.name = name;
+	}
+}
+
+str: String = "Hello, world!";
+data: SomeData = 32, "Sjarlov Pjitri";
+data2 := SomeData(16, "Mariov Klipro");
+
+func print_int(val: int)
+{
+	// print integers
+}
+
+func printf(str: *s8, ...)
+{
+	while *str {
+		if *str == '%' {
+			str++;
+			switch *str {
+				case 's' {
+					s := get_arg(*s8);
+					while *s {
+						std.putc(*s++);
+					}
+					str++;
+				}
+
+				case 'd' {
+					val := get_arg(int);
+					print_int(val);
+					str++;
+				}
+			}
+		} else {
+			std.putc(*str)
+		}
+	}
+}
+
+func main()
+{
+	i := 0;      // Gets the default integer type of int(32bit)
+	b:byte = 0; // Gets the specified type of byte(will complain if the constant is to big)
+
+	printf("Hello, %s!", "world");
+}
