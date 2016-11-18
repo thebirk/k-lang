@@ -1,2 +1,3 @@
 #!/bin/bash
-gcc -g main.c -o klang
+# K language compiler - Build script
+gcc -g main.c -o klc
