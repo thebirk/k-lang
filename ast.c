@@ -44,3 +44,37 @@ Node* make_binopnode(BinOpType type, Node *lhs, Node *rhs)
     n->binop.lhs = lhs;
     n->binop.rhs = rhs;
 }
+
+
+void print_indents(int n)
+{
+    for(int i = 0; i < n; i++) {
+        printf("  ");
+    }
+}
+
+ void print_node(Node *n)
+{
+    static int ident = 0;
+    print_indents(ident);
+    switch(n->type) {
+        case NODE_BINOP: {
+            BinOpNode op = n->binop;
+            printf("BinOpType: %d\n", op.type);
+            print_indents(ident);
+            printf("LHS:\n");
+            ident++;
+            print_node(op.lhs);
+            ident--;
+            print_indents(ident);
+            printf("RHS:\n");
+            ident++;
+            print_node(op.rhs);
+            ident--;
+        } break;
+        
+        default: {
+            printf("Unimplemented node in print_node()!\n");
+        } break;
+    }
+}

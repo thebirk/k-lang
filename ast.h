@@ -30,6 +30,8 @@ ENUM(int, ConstantType)
     CONST_STRING,
 };
 
+typedef struct Node Node;
+
 STRUCT(BinOpNode)
 {
     BinOpType type;
@@ -91,7 +93,7 @@ STRUCT(Node)
     NodeType type;
     
     union {
-        BinOp binop;
+        BinOpNode binop;
         ConstantNode constant;
         IdentNode ident;
         VarDeclNode vardecl;
@@ -105,5 +107,7 @@ STRUCT(Node)
 
 Node* make_node(NodeType type);
 Node* make_identnode(Token t);
+
+ void print_node(Node *n);
 
 #endif /* K_AST_H */

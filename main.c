@@ -15,7 +15,7 @@
 
 int main(int argc, char **argv)
 {
-    LexResult result = lex_file("test.k");
+    LexResult result = lex_file("current.k");
     
     for(int i = 0; i < result.size; i++) {
         Token t = result.tokens[i];
@@ -32,6 +32,9 @@ int main(int argc, char **argv)
             printf("\n");
         }
     }
+    
+    Node *program = parse(result);
+    print_node(program);
     
     return 0;
 }

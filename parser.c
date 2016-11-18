@@ -40,21 +40,23 @@ Node* expression();
 
 Node* factor()
 {
+     Token current = __current;
     if(accept(TOKEN_IDENT)) {
         if(accept(TOKEN_LEFTPAR)) {
             // Parse func call
         } else {
-        return make_identnode(__current);
+        return make_identnode(current);
         }
     } else if(accept(TOKEN_INTEGER)) {
-        return make_integernode(__current);
+        return make_integernode(current);
     } else if(accept(TOKEN_FLOAT)) {
-        return make_floatnode(__current);
+        return make_floatnode(current);
     } else if(accept(TOKEN_LEFTPAR)) {
         Node *expr = expression();
-        expect(TOKEN_RIGHTPAR);
+        expect(TOKEN_RIGHTPAR, "Expected ')' after '(' while parsing expression!");
         return expr;
     } else {
+        //printf("type: %d\n", __current.type);
         error("Expected ident, integer, float or '('");
     }
 }
