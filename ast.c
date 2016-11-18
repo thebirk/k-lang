@@ -45,8 +45,7 @@ Node* make_binopnode(BinOpType type, Node *lhs, Node *rhs)
     n->binop.rhs = rhs;
 }
 
-
-void print_indents(int n)
+static void print_indents(int n)
 {
     for(int i = 0; i < n; i++) {
         printf("  ");
@@ -60,6 +59,7 @@ void print_indents(int n)
     switch(n->type) {
         case NODE_BINOP: {
             BinOpNode op = n->binop;
+            //print_indents(ident);
             printf("BinOpType: %d\n", op.type);
             print_indents(ident);
             printf("LHS:\n");
@@ -71,6 +71,20 @@ void print_indents(int n)
             ident++;
             print_node(op.rhs);
             ident--;
+        } break;
+        
+        case NODE_CONSTANT: {
+            ConstantNode con = n->constant;
+            //print_indents(ident);
+            printf("ConstantType: %d\n", con.type);
+            print_indents(ident);
+            printf("Value: %s\n", con.value);
+        } break;
+        
+        case NODE_IDENT: {
+            IdentNode id = n->ident;
+            //print_indents(ident);
+            printf("Ident: %s\n", id.value);
         } break;
         
         default: {
