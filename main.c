@@ -7,9 +7,11 @@
 #endif /* _WIN32 */
 
 #define STRUCT(name) typedef struct name name; struct name
-#define ENUM(type, name) typedef type name; enum name
+#define ENUM(type, name) typedef type name; enum name##_
 
 #include "lexer.c"
+#include "ast.c"
+#include "parser.c"
 
 int main(int argc, char **argv)
 {
