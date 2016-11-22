@@ -1,0 +1,2 @@
+@echo off
+cl /DHAS_JAVA_TREEVIEW /Feklc /I "C:/Program Files/Java/jdk1.8.0_111/include" /I "C:/Program Files/Java/jdk1.8.0_111/include/win32" main.c jvm.lib /link /LIBPATH:"C:/Program Files/Java/jdk1.8.0_111/lib"
