@@ -26,7 +26,7 @@ STRUCT(TreeNode) {
     return n;
 }
 
-inline char* new_string(const char *str)
+char* new_string(const char *str)
 {
     return strdup(str);
 }
