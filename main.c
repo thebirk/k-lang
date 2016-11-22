@@ -33,6 +33,9 @@ freely, subject to the following restrictions:
 #include "lexer.c"
 #include "ast.c"
 #include "parser.c"
+#ifdef HAS_JAVA_TREEVIEW
+#include "treeview/treeview.c"
+#endif /* HAS_JAVA_TREEVIEW */
 
 int main(int argc, char **argv)
 {
@@ -55,7 +58,12 @@ int main(int argc, char **argv)
     }
     
     Node *program = parse(result);
+    
+    #ifdef HAS_JAVA_TREEVIEW
+    view_ast(program);
+    #else
     print_node(program);
+    #endif /* HAS_JAVA_TREEVIEW */
     
     return 0;
 }
