@@ -118,22 +118,21 @@ Node* block()
     
     if(accept(TOKEN_LEFTBRACE)) {
         do {
-            if(accept(TOKEN_RIGHTBRACE)) break;
             Node *stmt = statement();
             block_add_statement(b, stmt);
-        } while(accept(TOKEN_SEMICOLON));
+        } while(__current.type != TOKEN_RIGHTBRACE);
         //expect(TOKEN_SEMICOLON, "Expected ';' after the last statement in a block!");
-        //expect(TOKEN_RIGHTBRACE, "Expected '}' at the end of a block!");
+        expect(TOKEN_RIGHTBRACE, "Expected '}' at the end of a block!");
         } else {
         Node *stmt = statement();
-        expect(TOKEN_SEMICOLON, "Expected ';' after statement!");
+        //expect(TOKEN_SEMICOLON, "Expected ';' after statement!");
         block_add_statement(b, stmt);
     }
     
     return b;
 }
 
-Node* statement()
+Node* statement_semicolon()
 {
     Token current = __current;
     
@@ -142,7 +141,7 @@ Node* statement()
             if(accept(TOKEN_EQUAL)) {
                 // a := expr;
                 Node *expr = expression();
-                
+                expect(TOKEN_SEMICOLON, "Expected semicolon!");
                  return make_declassign(current, 0, expr);
             } else {
                 // TODO: Implement a type specifier resolver thingy
@@ -150,6 +149,7 @@ Node* statement()
             }
         } else if(accept(TOKEN_EQUAL)) {
             Node *expr = expression();
+            expect(TOKEN_SEMICOLON, "Expected semicolon!");
             return make_assignment(current, expr);
         } else if(accept(TOKEN_LEFTPAR)) {
             // TODO: Parse arguments
@@ -157,7 +157,13 @@ Node* statement()
         } else {
             error("Expected ':', '=' or '(' after ident!");
         }
-    } else if(accept(TOKEN_WHILE)) {
+    }
+}
+
+Node* statement()
+{
+    Token current = __current;
+    if(accept(TOKEN_WHILE)) {
         Node *expr = expression();
         Node *b = block();
         return make_while(expr, b);
@@ -170,6 +176,8 @@ Node* statement()
         }
         
         return make_if(expr, b, eb);
+    } else {
+        return statement_semicolon();
     }
 }
 
