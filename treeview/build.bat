@@ -1,4 +1,5 @@
 @echo off
+copy TreeView.java TreeView.java.old
 copy TreeView.java.c TreeView.java
 javac TreeView.java
 REM javah TreeView

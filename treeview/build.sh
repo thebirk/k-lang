@@ -1,4 +1,5 @@
 #!/bin/bash
+cp TreeView.java TreeView.java.old
 cp TreeView.java.c TreeView.java
 javac TreeView.java
 javah TreeView
