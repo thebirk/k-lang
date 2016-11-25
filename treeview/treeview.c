@@ -129,12 +129,73 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_value(env, obj, "Funcdef");
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
+            
+            jobject name = create_java_node(env);
+            snprintf(buffer, BSIZE, "Name: %s", n->funcdef.name->ident.value);
+            set_java_node_value(env, name, buffer);
+            set_java_node_parent(env, name, obj);
+            add_java_node_child(env, obj, name);
+            
+            do_node_2(env, n->funcdef.type, obj);
+            
+            jobject args = create_java_node(env);
+            snprintf(buffer, BSIZE, "Arguments: %d", n->funcdef.argument_count);
+            set_java_node_value(env, args, buffer);
+            set_java_node_parent(env, args, obj);
+            add_java_node_child(env, obj, args);
+            
+            for(int i = 0; i < n->funcdef.argument_count; i++) {
+                jobject arg = create_java_node(env);
+                snprintf(buffer, BSIZE, "Arg: #%d", i+1);
+                set_java_node_value(env, arg, buffer);
+                set_java_node_parent(env, arg, args);
+                add_java_node_child(env, args, arg);
+                
+                jobject ident = create_java_node(env);
+                snprintf(buffer, BSIZE, "Ident: %s", n->funcdef.argument_idents[i]->ident.value);
+                set_java_node_value(env, ident, buffer);
+                set_java_node_parent(env, ident, arg);
+                add_java_node_child(env, arg, ident);
+                
+                do_node_2(env, n->funcdef.argument_types[i], arg);
+            }
+            do_node_2(env, n->funcdef.block, obj);
         } break;
         case NODE_FUNCDECL: {
             jobject obj = create_java_node(env);
             set_java_node_value(env, obj, "Funcdecl");
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
+            
+            jobject name = create_java_node(env);
+            snprintf(buffer, BSIZE, "Name: %s", n->funcdecl.name->ident.value);
+            set_java_node_value(env, name, buffer);
+            set_java_node_parent(env, name, obj);
+            add_java_node_child(env, obj, name);
+            
+            do_node_2(env, n->funcdecl.type, obj);
+            
+            jobject args = create_java_node(env);
+            snprintf(buffer, BSIZE, "Arguments: %d", n->funcdecl.argument_count);
+            set_java_node_value(env, args, buffer);
+            set_java_node_parent(env, args, obj);
+            add_java_node_child(env, obj, args);
+            
+            for(int i = 0; i < n->funcdecl.argument_count; i++) {
+            jobject arg = create_java_node(env);
+                snprintf(buffer, BSIZE, "Arg: #%d", i+1);
+            set_java_node_value(env, arg, buffer);
+            set_java_node_parent(env, arg, args);
+            add_java_node_child(env, args, arg);
+                
+                jobject ident = create_java_node(env);
+                snprintf(buffer, BSIZE, "Ident: %s", n->funcdecl.argument_idents[i]->ident.value);
+                set_java_node_value(env, ident, buffer);
+                set_java_node_parent(env, ident, arg);
+                add_java_node_child(env, arg, ident);
+                
+                do_node_2(env, n->funcdecl.argument_types[i], arg);
+            }
         } break;
         case NODE_FUNCCALL: {
             jobject obj = create_java_node(env);

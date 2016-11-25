@@ -1,4 +1,10 @@
-x: *int[1][2][3] = 5;
+func sub(a: int, b: int): int result := a - b;
+
+//func mul(a: int, b: int): int;
+
+//func add(a: int, b: int): int {
+//	return a + b;
+//}
 
 //func malloc(u32 bytes): u8*;
 

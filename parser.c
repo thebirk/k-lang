@@ -230,15 +230,39 @@ Node* program()
     if(accept(TOKEN_FUNC)) {
         Token name = __current;
         expect(TOKEN_IDENT, "Expected function name after 'func'!");
-        expect(TOKEN_LEFTPAR, "Expected '(' after function name");
+        expect(TOKEN_LEFTPAR, "Expected '(' after function name!");
         
-        
+        int argument_count = 0;
+         Node **argument_idents = 0;
+         Node **argument_types = 0;
         
         if(!accept(TOKEN_RIGHTPAR)) {
             do {
             Token var = __current;
-            expect(TOKEN_IDENT, "");
+            expect(TOKEN_IDENT, "Expected argument name!");
+                expect(TOKEN_COLON, "Expected colon after argument name!");
+                Node *t = type();
+                
+                argument_count++;
+                argument_idents = realloc(argument_idents, sizeof(Node*)*argument_count);
+                argument_types = realloc(argument_types, sizeof(Node*)*argument_count);
+                argument_idents[argument_count-1] = make_identnode(var);
+                argument_types[argument_count-1] = t;
+                
         } while(accept(TOKEN_COMMA));
+    }
+    expect(TOKEN_RIGHTPAR, "Expected ')' after declaring function arguments!");
+    
+    Node *function_type = 0;
+    if(accept(TOKEN_COLON)) {
+        function_type = type();
+    }
+    
+    if(accept(TOKEN_SEMICOLON)) {
+        return make_funcdecl(make_identnode(name), function_type, argument_count, argument_idents, argument_types);
+    } else {
+        Node *b = block();
+        return make_funcdef(make_identnode(name), function_type, b, argument_count, argument_idents, argument_types);
     }
     
 }
@@ -252,6 +276,6 @@ Node* parse(LexResult result)
     __offset = 0;
     __current = __tokens.tokens[__offset];
     
-    Node* expr = block();
+    Node* expr = program();
     return expr;
 }

@@ -78,6 +78,33 @@ Node* make_assignment(Token var, Node *expr)
     return n;
 }
 
+Node* make_funcdecl(Node *name, Node *type, int argument_count, Node **argument_idents, Node **argument_types)
+{
+    Node *n = make_node(NODE_FUNCDECL);
+    
+    n->funcdecl.name = name;
+    n->funcdecl.type = type;
+    n->funcdecl.argument_count = argument_count;
+    n->funcdecl.argument_idents = argument_idents;
+    n->funcdecl.argument_types = argument_types;
+    
+    return n;
+}
+
+Node* make_funcdef(Node *name, Node *type, Node *block, int argument_count, Node **argument_idents, Node **argument_types)
+{
+    Node *n = make_node(NODE_FUNCDEF);
+    
+    n->funcdef.name = name;
+    n->funcdef.type = type;
+    n->funcdef.block = block;
+    n->funcdef.argument_count = argument_count;
+    n->funcdef.argument_idents = argument_idents;
+    n->funcdef.argument_types = argument_types;
+    
+    return n;
+}
+
 Node* make_while(Node *cond, Node *block)
 {
     Node *n = make_node(NODE_WHILE);

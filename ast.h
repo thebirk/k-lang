@@ -78,22 +78,27 @@ STRUCT(VarDeclAssignNode)
 STRUCT(FuncCallNode)
 {
     char *func_name;
-    // TODO: Store argument count and types
-};
-
-STRUCT(FuncDeclNode)
-{
-    char *name;
-     Node *type;
-    // TODO: Store argument count, type, and names
-    Node *block; // Use blocks or arrays of stmts?
+    int argument_count;
+    Node **arguments;
 };
 
 STRUCT(FuncDefNode)
 {
-    char *name;
+     Node *name;
      Node *type;
-    // TODO: Store argument count, type and names
+    Node *block;
+    int argument_count;
+     Node **argument_idents;
+    Node **argument_types;
+};
+
+STRUCT(FuncDeclNode)
+{
+     Node *name;
+     Node *type;
+    int argument_count;
+     Node **argument_idents;
+    Node **argument_types;
 };
 
 STRUCT(ProgramNode)
@@ -144,7 +149,7 @@ STRUCT(Node)
         VarDeclAssignNode vardeclassign;
         FuncCallNode funccall;
         FuncDeclNode funcdecl;
-        FuncDefNode funcdec;
+        FuncDefNode funcdef;
         ProgramNode program;
         BlockNode block;
         WhileNode nwhile;
@@ -160,6 +165,9 @@ Node* make_declassign(Token var, Node *type, Node *expr);
 Node* make_assignment(Token var, Node *expr);
 Node* make_while(Node *cond, Node *block);
 Node* make_if(Node *cond, Node *block, Node *else_block);
+
+Node* make_funcdecl(Node *name, Node *type, int argument_count, Node **argument_idents, Node **argument_types);
+Node* make_funcdef(Node *name, Node *type, Node *block, int argument_count, Node **argument_idents, Node **argument_types);
 
 // Remember to init the array to 0 and size to 0
 Node* make_block();
