@@ -1,7 +1,5 @@
 # k-lang
 
 k-lang is a hobby programming language.
-My intention is to create statically typed language.
-Final goals include:
-- JIT
-- x86 output
+
+Probably going to be dynamically typed and running on a vm. But who knows. Maybe I grow a little courage and make it staically typed and make it output native code.
