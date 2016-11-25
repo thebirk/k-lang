@@ -2,3 +2,20 @@
 
 [X] - Make blocks work great again
 [ ] - Add some function that can parse type specifiers
+[ ] - Syntax analysis
+
+## Virtual Machine
+
+[ ] - Desing the VM
+[ ] - Create the VM
+
+[ ] - Convert VM code into a "native" executable
+
+## Compiler part of the compiler
+
+[ ] - Generate VM code
+
+## Long-term
+
+[ ] - Conway's game of life implementation
+[ ] - SDL2
