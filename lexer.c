@@ -48,7 +48,7 @@ static inline int is_ident(int c)
 
 static inline int is_num(int c)
 {
-    is_digit(c) || (c == '.');
+    return is_digit(c) || (c == '.');
 }
 
 LexResult lex_file(const char *path)
@@ -73,7 +73,7 @@ LexResult lex_file(const char *path)
 
 LexResult lex_file_data(char *data, const char *filename)
 {
-    LexResult result = {};
+    LexResult result = {0};
     result.tokens = 0;
     result.size = 0;
     result.mem_size = 0;

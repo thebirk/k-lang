@@ -43,7 +43,63 @@ Node* make_binopnode(BinOpType type, Node *lhs, Node *rhs)
     n->binop.type = type;
     n->binop.lhs = lhs;
     n->binop.rhs = rhs;
+    
+    return n;
 }
+
+Node* make_declassign(Token var, char *type, Node *expr)
+{
+    Node *n = make_node(NODE_VARDECLASSIGN);
+    
+    if(type == 0) {
+        n->vardeclassign.type = 0;
+    } else {
+        n->vardeclassign.type = strdup(type);
+    }
+    n->vardeclassign.var = strdup(var.value);
+    n->vardeclassign.expr = expr;
+    
+    return n;
+}
+
+Node* make_assignment(Token var, Node *expr)
+{
+    Node *n = make_node(NODE_VARASSIGN);
+    
+    n->varassign.var = strdup(var.value);
+    n->varassign.expr = expr;
+    
+    return n;
+}
+
+Node* make_while(Node *cond, Node *block)
+{
+    Node *n = make_node(NODE_WHILE);
+    
+    n->nwhile.condition = cond;
+    n->nwhile.block = block;
+    
+    return n;
+}
+
+// Remember to init the array to 0 and size to 0
+Node* make_block()
+{
+    Node *n = make_node(NODE_BLOCK);
+    
+    n->block.stmts = 0;
+    n->block.count = 0;
+    
+    return n;
+}
+
+void block_add_statement(Node *b, Node *stmt)
+{
+    b->block.count++;
+    b->block.stmts = (Node**) realloc(b->block.stmts, sizeof(Node*)*b->block.count);
+    b->block.stmts[b->block.count-1] = stmt;
+ }
+
 
 static void print_indents(int n)
 {

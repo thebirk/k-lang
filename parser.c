@@ -10,6 +10,11 @@ void next()
     __current = __tokens.tokens[__offset];
 }
 
+int istype(TokenType type)
+{
+    return __current.type == type;
+}
+
 int accept(TokenType type)
 {
     if(__current.type == type) {
@@ -106,9 +111,66 @@ Node* expression()
     return lhs;
 }
 
+Node* statement();
+Node* block()
+{
+    // Either a single statement or
+    // multiple statement within braces
+    
+    Node *b = make_block();
+    
+    if(accept(TOKEN_LEFTBRACE)) {
+        do {
+            Node *stmt = statement();
+            block_add_statement(b, stmt);
+        } while(accept(TOKEN_SEMICOLON));
+        expect(TOKEN_SEMICOLON, "Expected ';' after the last statement in a block!");
+        expect(TOKEN_RIGHTBRACE, "Expected '}' at the end of a block!");
+        
+        
+    } else {
+        Node *stmt = statement();
+        expect(TOKEN_SEMICOLON, "Expected ';' after statement!");
+        block_add_statement(b, stmt);
+    }
+    
+    return b;
+}
+
+Node* statement()
+{
+    Token current = __current;
+    
+    if(accept(TOKEN_IDENT)) {
+        if(accept(TOKEN_COLON)) {
+            if(accept(TOKEN_EQUAL)) {
+                // a := expr;
+                Node *expr = expression();
+                
+                 return make_declassign(current, 0, expr);
+            } else {
+                // TODO: Implement a type specifier resolver thingy
+                
+            }
+        } else if(accept(TOKEN_EQUAL)) {
+            Node *expr = expression();
+            return make_assignment(current, expr);
+        } else if(accept(TOKEN_LEFTPAR)) {
+            // TODO: Parse arguments
+            // do while style is probably the best
+        } else {
+            error("Expected ':', '=' or '(' after ident!");
+        }
+    } else if(accept(TOKEN_WHILE)) {
+        Node *expr = expression();
+        Node *b = block();
+        return make_while(expr, b);
+    }
+}
+
 Node* program()
 {
-    
+    return 0;
 }
 
 Node* parse(LexResult result)
