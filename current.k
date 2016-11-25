@@ -1,7 +1,15 @@
-if a {
-	x = 2;
-} else if b {
-	x = 1;
-} else {
-	x = 1+2;
-}
+x: *int[1][2][3] = 5;
+
+//func malloc(u32 bytes): u8*;
+
+//func add(a: int, b: int): int
+//{
+//	return a + b;
+//}
+
+// Inferred to be of return void
+//func main()
+//{
+//	arr: *int = malloc(100);
+	
+//}

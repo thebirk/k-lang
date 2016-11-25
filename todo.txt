@@ -6,7 +6,7 @@
 
 ## Virtual Machine
 
-[ ] - Desing the VM
+[ ] - Design the VM
 [ ] - Create the VM
 
 [ ] - Convert VM code into a "native" executable

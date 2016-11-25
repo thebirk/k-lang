@@ -111,6 +111,41 @@ Node* expression()
     return lhs;
 }
 
+Node* type()
+{
+    Node *nn = make_node(NODE_TYPE);
+    TypeNode *n = &nn->ntype;
+    n->pointer_count = 0;
+    n->array_count = 0;
+    
+    if(accept(TOKEN_ASTERISK)) {
+        n->pointer = 1;
+        n->pointer_count++;
+        
+        while(accept(TOKEN_ASTERISK)) {
+            n->pointer_count++;
+        }
+    }
+    
+    Token name = __current;
+    expect(TOKEN_IDENT, "Expected type name!");
+    
+    n->ident = make_identnode(name);
+    
+    if(accept(TOKEN_LEFTBRACKET)) {
+        n->array = 1;
+        do {
+        Node *expr = expression();
+        expect(TOKEN_RIGHTBRACKET, "Expected ']' after expression!");
+            n->array_count++;
+            n->array_expr = realloc(n->array_expr, sizeof(Node*) * n->array_count);
+            n->array_expr[n->array_count-1] = expr;
+        } while(accept(TOKEN_LEFTBRACKET));
+    }
+    
+    return nn;
+}
+
 Node* statement();
 Node* block()
 {
@@ -121,11 +156,9 @@ Node* block()
             Node *stmt = statement();
             block_add_statement(b, stmt);
         } while(__current.type != TOKEN_RIGHTBRACE);
-        //expect(TOKEN_SEMICOLON, "Expected ';' after the last statement in a block!");
         expect(TOKEN_RIGHTBRACE, "Expected '}' at the end of a block!");
         } else {
         Node *stmt = statement();
-        //expect(TOKEN_SEMICOLON, "Expected ';' after statement!");
         block_add_statement(b, stmt);
     }
     
@@ -144,8 +177,19 @@ Node* statement_semicolon()
                 expect(TOKEN_SEMICOLON, "Expected semicolon!");
                  return make_declassign(current, 0, expr);
             } else {
-                // TODO: Implement a type specifier resolver thingy
-                error("unimplemented!");
+                
+                Node *t = type();
+                
+                if(accept(TOKEN_EQUAL)) {
+                    Node *expr = expression();
+                    expect(TOKEN_SEMICOLON, "Expected semicolon after variable decleration!");
+                    
+                    return make_declassign(current, t, expr);
+                } else {
+                    expect(TOKEN_SEMICOLON, "Expected semicolon after variable decleration!");
+                    return make_decl(current, t);
+                }
+                
             }
         } else if(accept(TOKEN_EQUAL)) {
             Node *expr = expression();
@@ -183,6 +227,22 @@ Node* statement()
 
 Node* program()
 {
+    if(accept(TOKEN_FUNC)) {
+        Token name = __current;
+        expect(TOKEN_IDENT, "Expected function name after 'func'!");
+        expect(TOKEN_LEFTPAR, "Expected '(' after function name");
+        
+        
+        
+        if(!accept(TOKEN_RIGHTPAR)) {
+            do {
+            Token var = __current;
+            expect(TOKEN_IDENT, "");
+        } while(accept(TOKEN_COMMA));
+    }
+    
+}
+    
     return 0;
 }
 

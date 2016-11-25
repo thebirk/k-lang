@@ -17,6 +17,7 @@ ENUM(int, NodeType)
     NODE_BLOCK,
     NODE_WHILE,
     NODE_IF,
+    NODE_TYPE,
 };
 
 ENUM(int, BinOpType)
@@ -57,20 +58,20 @@ STRUCT(IdentNode)
 
 STRUCT(VarDeclNode)
 {
-    char *type;
-    char *var;
+     Node *type;
+      char *var;
 };
 
 STRUCT(VarAssignNode)
 {
-    char *var;
+      char*var;
     Node *expr;
 };
 
 STRUCT(VarDeclAssignNode)
 {
-    char *type;
-    char *var;
+     Node *type;
+      char *var;
     Node *expr;
 };
 
@@ -83,7 +84,7 @@ STRUCT(FuncCallNode)
 STRUCT(FuncDeclNode)
 {
     char *name;
-    char *type;
+     Node *type;
     // TODO: Store argument count, type, and names
     Node *block; // Use blocks or arrays of stmts?
 };
@@ -91,7 +92,7 @@ STRUCT(FuncDeclNode)
 STRUCT(FuncDefNode)
 {
     char *name;
-    char *type;
+     Node *type;
     // TODO: Store argument count, type and names
 };
 
@@ -120,6 +121,16 @@ STRUCT(IfNode)
     Node *else_block;
 };
 
+STRUCT(TypeNode)
+{
+    int pointer;
+    int pointer_count;
+    Node *ident;
+    int array;
+    int array_count;
+    Node **array_expr;
+};
+
 STRUCT(Node)
 {
     NodeType type;
@@ -138,12 +149,14 @@ STRUCT(Node)
         BlockNode block;
         WhileNode nwhile;
         IfNode nif;
+        TypeNode ntype;
     };
 };
 
 Node* make_node(NodeType type);
 Node* make_identnode(Token t);
-Node* make_declassign(Token var, char *type, Node *expr);
+Node* make_decl(Token var, Node *type);
+Node* make_declassign(Token var, Node *type, Node *expr);
 Node* make_assignment(Token var, Node *expr);
 Node* make_while(Node *cond, Node *block);
 Node* make_if(Node *cond, Node *block, Node *else_block);

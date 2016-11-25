@@ -148,11 +148,14 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
             
-            jobject type = create_java_node(env);
-            snprintf(buffer, BSIZE, "Type: %s", n->vardecl.type);
-            set_java_node_value(env, type, buffer);
-            set_java_node_parent(env, type, obj);
-            add_java_node_child(env, obj, type);
+            if(n->vardecl.type == 0) {
+                jobject type = create_java_node(env);
+                set_java_node_value(env, type, "Type: To be inferred");
+                set_java_node_parent(env, type, obj);
+                add_java_node_child(env, obj, type);
+            } else {
+                do_node_2(env, n->vardecl.type, obj);
+            }
             
             jobject var = create_java_node(env);
             snprintf(buffer, BSIZE, "Var: %s", n->vardecl.var);
@@ -184,11 +187,14 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
             
-            jobject type = create_java_node(env);
-            snprintf(buffer, BSIZE, "Type: %s", n->vardeclassign.type);
-            set_java_node_value(env, type, buffer);
+            if(n->vardeclassign.type == 0) {
+                jobject type = create_java_node(env);
+            set_java_node_value(env, type, "Type: To be inferred");
             set_java_node_parent(env, type, obj);
             add_java_node_child(env, obj, type);
+            } else {
+            do_node_2(env, n->vardeclassign.type, obj);
+            }
             
             jobject var = create_java_node(env);
             snprintf(buffer, BSIZE, "Var: %s", n->vardeclassign.var);
@@ -269,6 +275,25 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             if(b.else_block) {
             do_node_2(env, b.else_block, eblock);
             }
+        } break;
+        case NODE_TYPE: {
+            jobject obj = create_java_node(env);
+            
+            int offs = 0;
+            
+            offs += snprintf(buffer+offs, BSIZE-offs, "Type: ");
+            for(int i = 0; i < n->ntype.pointer_count; i++) {
+                offs += snprintf(buffer+offs, BSIZE-offs, "*");
+            }
+            offs += snprintf(buffer+offs, BSIZE-offs, "%s", n->ntype.ident->ident.value);
+            for(int i = 0; i < n->ntype.array_count; i++) {
+                offs += snprintf(buffer+offs, BSIZE-offs, "[]");
+            }
+            
+            offs += snprintf(buffer+offs, BSIZE-offs, " - Not fully implemented");
+            set_java_node_value(env, obj, buffer);
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
         } break;
         case NODE_PROGRAM: {
             jobject obj = create_java_node(env);

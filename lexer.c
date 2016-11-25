@@ -104,6 +104,19 @@ LexResult lex_file_data(char *data, const char *filename)
             continue;
         }
         
+        if(*ptr == '/' && *(ptr+1) == '/') {
+            ptr += 2;
+            while(*ptr && (*ptr != '\n')) {
+                ptr++;
+            }
+            if(*ptr == 0) continue;
+            ptr++;
+            if(*ptr == 0) continue;
+            ptr++;
+            x = 1;
+            line++;
+            continue;
+           }
         
         // Double tokens
         if(*ptr == '=' && *(ptr+1) == '=') {

@@ -47,15 +47,21 @@ Node* make_binopnode(BinOpType type, Node *lhs, Node *rhs)
     return n;
 }
 
-Node* make_declassign(Token var, char *type, Node *expr)
+Node* make_decl(Token var, Node *type)
+{
+    Node *n = make_node(NODE_VARDECL);
+    
+        n->vardecl.type = type;
+    n->vardecl.var = strdup(var.value);
+    
+    return n;
+}
+
+Node* make_declassign(Token var, Node *type, Node *expr)
 {
     Node *n = make_node(NODE_VARDECLASSIGN);
     
-    if(type == 0) {
-        n->vardeclassign.type = 0;
-    } else {
-        n->vardeclassign.type = strdup(type);
-    }
+        n->vardeclassign.type = type;
     n->vardeclassign.var = strdup(var.value);
     n->vardeclassign.expr = expr;
     
