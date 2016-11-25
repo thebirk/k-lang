@@ -239,6 +239,7 @@ LexResult lex_file_data(char *data, const char *filename)
             KEYWORD("true", TOKEN_TRUE)
                 KEYWORD("false", TOKEN_FALSE)
                 KEYWORD("if", TOKEN_IF)
+                KEYWORD("else", TOKEN_ELSE)
                 KEYWORD("while", TOKEN_WHILE)
                 KEYWORD("struct", TOKEN_STRUCT)
                 KEYWORD("return", TOKEN_RETURN)
@@ -284,6 +285,7 @@ const char* get_token_name(TokenType type)
         TOKEN(TOKEN_NEQUALS);
         TOKEN(TOKEN_EOF);
         TOKEN(TOKEN_RETURN);
+        TOKEN(TOKEN_ELSE);
         #undef TOKEN
     }
     

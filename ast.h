@@ -16,6 +16,7 @@ ENUM(int, NodeType)
     NODE_PROGRAM,
     NODE_BLOCK,
     NODE_WHILE,
+    NODE_IF,
 };
 
 ENUM(int, BinOpType)
@@ -112,6 +113,13 @@ STRUCT(WhileNode)
     Node *block;
 };
 
+STRUCT(IfNode)
+{
+    Node *condition;
+    Node *block;
+    Node *else_block;
+};
+
 STRUCT(Node)
 {
     NodeType type;
@@ -129,6 +137,7 @@ STRUCT(Node)
         ProgramNode program;
         BlockNode block;
         WhileNode nwhile;
+        IfNode nif;
     };
 };
 
@@ -137,6 +146,7 @@ Node* make_identnode(Token t);
 Node* make_declassign(Token var, char *type, Node *expr);
 Node* make_assignment(Token var, Node *expr);
 Node* make_while(Node *cond, Node *block);
+Node* make_if(Node *cond, Node *block, Node *else_block);
 
 // Remember to init the array to 0 and size to 0
 Node* make_block();

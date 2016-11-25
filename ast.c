@@ -82,6 +82,17 @@ Node* make_while(Node *cond, Node *block)
     return n;
 }
 
+Node* make_if(Node *cond, Node *block, Node *else_block)
+{
+    Node *n = make_node(NODE_IF);
+    
+    n->nif.condition = cond;
+    n->nif.block = block;
+    n->nif.else_block = else_block;
+    
+    return n;
+}
+
 // Remember to init the array to 0 and size to 0
 Node* make_block()
 {

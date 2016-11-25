@@ -114,9 +114,6 @@ Node* expression()
 Node* statement();
 Node* block()
 {
-    // Either a single statement or
-    // multiple statement within braces
-    
     Node *b = make_block();
     
     if(accept(TOKEN_LEFTBRACE)) {
@@ -164,6 +161,15 @@ Node* statement()
         Node *expr = expression();
         Node *b = block();
         return make_while(expr, b);
+    } else if(accept(TOKEN_IF)) {
+        Node *expr = expression();
+        Node *b = block();
+        Node *eb = 0;
+        if(accept(TOKEN_ELSE)) {
+            eb = block();
+        }
+        
+        return make_if(expr, b, eb);
     }
 }
 
@@ -178,6 +184,6 @@ Node* parse(LexResult result)
     __offset = 0;
     __current = __tokens.tokens[__offset];
     
-    Node* expr = statement();
+    Node* expr = block();
     return expr;
 }

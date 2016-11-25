@@ -28,6 +28,7 @@ ENUM(int, TokenType)
     
     // Keywords
     TOKEN_IF,
+    TOKEN_ELSE,
     TOKEN_FUNC,
     TOKEN_WHILE,
     TOKEN_SWITCH,

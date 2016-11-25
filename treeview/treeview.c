@@ -242,6 +242,34 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             add_java_node_child(env, obj, block);
             do_node_2(env, b.block, block);
         } break;
+        case NODE_IF: {
+            jobject obj = create_java_node(env);
+            set_java_node_value(env, obj, "If");
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
+            
+            IfNode b = n->nif;
+            jobject cond = create_java_node(env);
+            set_java_node_value(env, cond, "Cond");
+            set_java_node_parent(env, cond, obj);
+            add_java_node_child(env, obj, cond);
+            do_node_2(env, b.condition, cond);
+            
+            jobject block = create_java_node(env);
+            set_java_node_value(env, block, "Block");
+            set_java_node_parent(env, block, obj);
+            add_java_node_child(env, obj, block);
+            do_node_2(env, b.block, block);
+            
+            
+            jobject eblock = create_java_node(env);
+            set_java_node_value(env, eblock, "Else Block");
+            set_java_node_parent(env, eblock, obj);
+            add_java_node_child(env, obj, eblock);
+            if(b.else_block) {
+            do_node_2(env, b.else_block, eblock);
+            }
+        } break;
         case NODE_PROGRAM: {
             jobject obj = create_java_node(env);
             set_java_node_value(env, obj, "Program");
