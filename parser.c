@@ -121,14 +121,13 @@ Node* block()
     
     if(accept(TOKEN_LEFTBRACE)) {
         do {
+            if(accept(TOKEN_RIGHTBRACE)) break;
             Node *stmt = statement();
             block_add_statement(b, stmt);
         } while(accept(TOKEN_SEMICOLON));
-        expect(TOKEN_SEMICOLON, "Expected ';' after the last statement in a block!");
-        expect(TOKEN_RIGHTBRACE, "Expected '}' at the end of a block!");
-        
-        
-    } else {
+        //expect(TOKEN_SEMICOLON, "Expected ';' after the last statement in a block!");
+        //expect(TOKEN_RIGHTBRACE, "Expected '}' at the end of a block!");
+        } else {
         Node *stmt = statement();
         expect(TOKEN_SEMICOLON, "Expected ';' after statement!");
         block_add_statement(b, stmt);
@@ -150,7 +149,7 @@ Node* statement()
                  return make_declassign(current, 0, expr);
             } else {
                 // TODO: Implement a type specifier resolver thingy
-                
+                error("unimplemented!");
             }
         } else if(accept(TOKEN_EQUAL)) {
             Node *expr = expression();
@@ -179,5 +178,6 @@ Node* parse(LexResult result)
     __offset = 0;
     __current = __tokens.tokens[__offset];
     
-    Node* expr = expression();
+    Node* expr = statement();
+    return expr;
 }

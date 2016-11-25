@@ -1,0 +1,4 @@
+## Parser
+
+[X] - Make blocks work great again
+[ ] - Add some function that can parse type specifiers

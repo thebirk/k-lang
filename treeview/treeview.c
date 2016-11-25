@@ -9,98 +9,9 @@
 #define _strdup strdup
 #endif
 
-STRUCT(TreeNode) {
-    TreeNode *parent;
-    char *value;
-    TreeNode **children;
-    int child_count;
-};
-
- TreeNode* make_tnode()
-{
-    TreeNode *n = (TreeNode*) malloc(sizeof(TreeNode));
-    n->parent = 0;
-    n->value = 0;
-    n->children = 0;
-    n->child_count = 0;
-    return n;
-}
-
 char* new_string(const char *str)
 {
     return strdup(str);
-}
-
-void add_child(TreeNode *parent, TreeNode *child)
-{
-    child->parent = parent;
-    parent->child_count++;
-    parent->children = (TreeNode**) realloc(parent->children, sizeof(TreeNode*)*parent->child_count);
-    parent->children[parent->child_count-1] = child;
-}
-
-void add_child_value(TreeNode *parent, char *value)
-{
-    TreeNode *child = make_tnode();
-    child->value = new_string(value);
-    add_child(parent, child);
-}
-
-void do_node(Node *n, TreeNode* parent)
-{
-    switch(n->type) {
-        case NODE_BINOP: {
-            BinOpNode op = n->binop;
-            
-            TreeNode *tn = make_tnode();
-            tn->parent = parent;
-            tn->value = new_string("BinOp");
-            add_child_value(tn, "Type 0");
-            
-            TreeNode *lhs = make_tnode();
-            lhs->value = new_string("LHS");
-            do_node(op.lhs, lhs);
-            TreeNode *rhs = make_tnode();
-            rhs->value = new_string("RHS");
-            do_node(op.rhs, rhs);
-            
-            add_child(parent, tn);
-        } break;
-            case NODE_CONSTANT: {
-                add_child_value(parent, "Constant");
-            } break;
-        case NODE_IDENT: {
-            add_child_value(parent, "Ident");
-        } break;
-        case NODE_FUNCDEF: {
-            add_child_value(parent, "Funcdef");
-        } break;
-        case NODE_FUNCDECL: {
-            add_child_value(parent, "Funcdecl");
-        } break;
-        case NODE_FUNCCALL: {
-            add_child_value(parent, "Funccall");
-        } break;
-        case NODE_VARDECL: {
-            add_child_value(parent, "Vardecl");
-        } break;
-        case NODE_VARASSIGN: {
-            add_child_value(parent, "Varassign");
-        } break;
-        case NODE_PROGRAM: {
-            add_child_value(parent, "Program");
-        } break;
-    }
-}
-
-TreeNode* ast_to_tnode(Node *ast)
-{
-    TreeNode *root = make_tnode();
-    root->value = new_string("root");
-    
-    do_node(ast, root);
-    
-    return root;
 }
 
 static jclass node_class;
@@ -156,9 +67,21 @@ void add_java_node_child(JNIEnv *env, jobject jnode, jobject child)
     (*env)->CallBooleanMethod(env, ar, arraylist_add, child);
 }
 
+char binop_type_to_c(BinOpType type)
+{
+    switch(type) {
+        case BINOP_ADD: return '+';
+        case BINOP_SUB: return '-';
+        case BINOP_MUL: return '*';
+        case BINOP_DIV: return '/';
+    }
+    return '?';
+}
+
 void do_node_2(JNIEnv *env, Node *n, jobject parent)
 {
-    char buffer[2048];
+    #define BSIZE 2048
+    char buffer[BSIZE];
     switch(n->type) {
         case NODE_BINOP: {
             BinOpNode op = n->binop;
@@ -169,7 +92,8 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             
             jobject type = create_java_node(env);
             set_java_node_parent(env, type, tn);
-            set_java_node_value(env, type, "Type: +");
+            snprintf(buffer, BSIZE, "Type: %c", binop_type_to_c(op.type));
+            set_java_node_value(env, type, buffer);
             add_java_node_child(env, tn, type);
             
             jobject lhs = create_java_node(env);
@@ -188,14 +112,15 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
         } break;
         case NODE_CONSTANT: {
             jobject obj = create_java_node(env);
-            snprintf(buffer, 2048, "Constant: %s", n->constant.value);
+            snprintf(buffer, BSIZE, "Constant: %s", n->constant.value);
             set_java_node_value(env, obj, buffer);
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
         } break;
         case NODE_IDENT: {
             jobject obj = create_java_node(env);
-            set_java_node_value(env, obj, "Ident");
+            snprintf(buffer, BSIZE, "Ident: %s", n->ident.value);
+            set_java_node_value(env, obj, buffer); 
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
         } break;
@@ -222,12 +147,100 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_value(env, obj, "Vardecl");
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
+            
+            jobject type = create_java_node(env);
+            snprintf(buffer, BSIZE, "Type: %s", n->vardecl.type);
+            set_java_node_value(env, type, buffer);
+            set_java_node_parent(env, type, obj);
+            add_java_node_child(env, obj, type);
+            
+            jobject var = create_java_node(env);
+            snprintf(buffer, BSIZE, "Var: %s", n->vardecl.var);
+            set_java_node_value(env, var, buffer);
+            set_java_node_parent(env, var, obj);
+            add_java_node_child(env, obj, var);
         } break;
         case NODE_VARASSIGN: {
             jobject obj = create_java_node(env);
             set_java_node_value(env, obj, "Varassign");
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
+            
+            jobject type = create_java_node(env);
+            snprintf(buffer, BSIZE, "Var: %s", n->varassign.var);
+            set_java_node_value(env, type, buffer);
+            set_java_node_parent(env, type, obj);
+            add_java_node_child(env, obj, type);
+            
+            jobject expr = create_java_node(env);
+            set_java_node_value(env, expr, "Expr");
+            set_java_node_parent(env, expr, obj);
+            do_node_2(env, n->varassign.expr, expr);
+            add_java_node_child(env, obj, expr);
+        } break;
+        case NODE_VARDECLASSIGN: {
+            jobject obj = create_java_node(env);
+            set_java_node_value(env, obj, "Vardeclassign");
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
+            
+            jobject type = create_java_node(env);
+            snprintf(buffer, BSIZE, "Type: %s", n->vardeclassign.type);
+            set_java_node_value(env, type, buffer);
+            set_java_node_parent(env, type, obj);
+            add_java_node_child(env, obj, type);
+            
+            jobject var = create_java_node(env);
+            snprintf(buffer, BSIZE, "Var: %s", n->vardeclassign.var);
+            set_java_node_value(env, var, buffer);
+            set_java_node_parent(env, var, obj);
+            add_java_node_child(env, obj, var);
+            
+            jobject expr = create_java_node(env);
+            set_java_node_value(env, expr, "Expr");
+            set_java_node_parent(env, expr, obj);
+            do_node_2(env, n->vardeclassign.expr, expr);
+            add_java_node_child(env, obj, expr);
+        } break;
+        case NODE_BLOCK: {
+            jobject obj = create_java_node(env);
+            set_java_node_value(env, obj, "Block");
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
+            
+            BlockNode b = n->block;
+            jobject count = create_java_node(env);
+            snprintf(buffer, BSIZE, "Count: %d", b.count);
+            set_java_node_value(env, count, buffer);
+            set_java_node_parent(env, count, obj);
+            add_java_node_child(env, obj, count);
+            
+            for(int i = 0; i < b.count; i++) {
+                jobject stmt = create_java_node(env);
+                set_java_node_parent(env, stmt, obj);
+                add_java_node_child(env, obj, stmt);
+                set_java_node_value(env, stmt, "Stmt");
+                do_node_2(env, b.stmts[i], stmt);
+            }
+        } break;
+        case NODE_WHILE: {
+            jobject obj = create_java_node(env);
+            set_java_node_value(env, obj, "While");
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
+            
+            WhileNode b = n->nwhile;
+            jobject cond = create_java_node(env);
+            set_java_node_value(env, cond, "Cond");
+            set_java_node_parent(env, cond, obj);
+            add_java_node_child(env, obj, cond);
+            do_node_2(env, b.condition, cond);
+            
+            jobject block = create_java_node(env);
+            set_java_node_value(env, block, "Block");
+            set_java_node_parent(env, block, obj);
+            add_java_node_child(env, obj, block);
+            do_node_2(env, b.block, block);
         } break;
         case NODE_PROGRAM: {
             jobject obj = create_java_node(env);

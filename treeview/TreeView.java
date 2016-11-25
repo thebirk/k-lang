@@ -4,6 +4,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
+/*
+
+TODO:
+
+- Select between searching from current node and downward or start from top
+- 
+
+*/
+
 class Node
 {
     Node parent;
@@ -73,7 +82,7 @@ class Node
             t.setShowsRootHandles(true);
             JScrollPane p = new JScrollPane(t);
                         f.add(p, BorderLayout.CENTER);
-                        f.setSize(300, 300);
+                        f.setSize(600, 600);
                         f.setLocationRelativeTo(null);
                         
             go.addActionListener(new ActionListener() {

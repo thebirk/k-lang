@@ -37,10 +37,8 @@ freely, subject to the following restrictions:
 #include "treeview/treeview.c"
 #endif /* HAS_JAVA_TREEVIEW */
 
-int main(int argc, char **argv)
+void print_lex_result(LexResult result)
 {
-    LexResult result = lex_file("current.k");
-    
     for(int i = 0; i < result.size; i++) {
         Token t = result.tokens[i];
         
@@ -52,10 +50,15 @@ int main(int argc, char **argv)
             printf(": %s\n", t.value);
         } else if(t.type == TOKEN_INTEGER) {
             printf(": %s\n", t.value);
-         } else {
+        } else {
             printf("\n");
         }
     }
+}
+
+int main(int argc, char **argv)
+{
+    LexResult result = lex_file("current.k");
     
     Node *program = parse(result);
     
