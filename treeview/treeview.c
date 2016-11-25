@@ -258,7 +258,7 @@ JNIEnv* create_vm(JavaVM **jvm)
     JavaVMOption options;
     args.version = JNI_VERSION_1_6;
     args.nOptions = 1;
-    options.optionString = "-Djava.class.path=./";
+    options.optionString = "-Djava.class.path=./treeview";
     args.options = &options;
     args.ignoreUnrecognized = 0;
     int rv;
