@@ -1,0 +1,21 @@
+%struct.test = type {i8,i8}
+@str = constant [14 x i8] c"x: %d, y: %d\0A\00"
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main() {
+	%str = getelementptr [14 x i8], [14 x i8]* @str, i64 0, i32 0
+	
+	%ptr = alloca %struct.test, align 1
+	%x = getelementptr %struct.test, %struct.test* %ptr,i32 0,i32 0
+	%y = getelementptr %struct.test, %struct.test* %ptr,i32 0,i32 1
+
+	store i8 1, i8* %x
+	store i8 15, i8* %y
+	
+	%xv = load i8, i8* %x
+	%yv = load i8, i8* %y
+	call i32 (i8*, ...) @printf(i8* %str, i8 %xv, i8 %yv)
+
+	ret i32 0
+}
