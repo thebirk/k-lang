@@ -152,6 +152,9 @@ Node* block()
     Node *b = make_block();
     
     if(accept(TOKEN_LEFTBRACE)) {
+        if(accept(TOKEN_RIGHTBRACE)) {
+            return b;
+        }
         do {
             Node *stmt = statement();
             block_add_statement(b, stmt);
@@ -227,6 +230,8 @@ Node* statement()
 
 Node* program()
 {
+    Node *p = make_program();
+     do {
     if(accept(TOKEN_FUNC)) {
         Token name = __current;
         expect(TOKEN_IDENT, "Expected function name after 'func'!");
@@ -250,8 +255,9 @@ Node* program()
                 argument_types[argument_count-1] = t;
                 
         } while(accept(TOKEN_COMMA));
+        
+        expect(TOKEN_RIGHTPAR, "Expected ')' after declaring function arguments!");
     }
-    expect(TOKEN_RIGHTPAR, "Expected ')' after declaring function arguments!");
     
     Node *function_type = 0;
     if(accept(TOKEN_COLON)) {
@@ -259,15 +265,16 @@ Node* program()
     }
     
     if(accept(TOKEN_SEMICOLON)) {
-        return make_funcdecl(make_identnode(name), function_type, argument_count, argument_idents, argument_types);
+        program_add_func(p, make_funcdecl(make_identnode(name), function_type, argument_count, argument_idents, argument_types));
     } else {
         Node *b = block();
-        return make_funcdef(make_identnode(name), function_type, b, argument_count, argument_idents, argument_types);
+        program_add_func(p, make_funcdef(make_identnode(name), function_type, b, argument_count, argument_idents, argument_types));
     }
     
 }
     
-    return 0;
+} while(__current.type != TOKEN_EOF);
+    return p;
 }
 
 Node* parse(LexResult result)

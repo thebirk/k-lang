@@ -136,7 +136,14 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_parent(env, name, obj);
             add_java_node_child(env, obj, name);
             
-            do_node_2(env, n->funcdef.type, obj);
+            if(n->funcdef.type == 0) {
+                jobject type = create_java_node(env);
+                set_java_node_value(env, type, "Type: void");
+                set_java_node_parent(env, type, obj);
+                add_java_node_child(env, obj, type);
+            } else {
+                do_node_2(env, n->funcdef.type, obj);
+            }
             
             jobject args = create_java_node(env);
             snprintf(buffer, BSIZE, "Arguments: %d", n->funcdef.argument_count);
@@ -173,7 +180,14 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_parent(env, name, obj);
             add_java_node_child(env, obj, name);
             
+            if(n->funcdecl.type == 0) {
+                jobject type = create_java_node(env);
+                set_java_node_value(env, type, "Type: void");
+                set_java_node_parent(env, type, obj);
+                add_java_node_child(env, obj, type);
+            } else {
             do_node_2(env, n->funcdecl.type, obj);
+            }
             
             jobject args = create_java_node(env);
             snprintf(buffer, BSIZE, "Arguments: %d", n->funcdecl.argument_count);
@@ -361,6 +375,14 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_value(env, obj, "Program");
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
+            
+            jobject funcs = create_java_node(env);
+            set_java_node_value(env, funcs, "Functions");
+            set_java_node_parent(env, funcs, obj);
+            add_java_node_child(env, obj, funcs);
+            for(int i = 0; i < n->program.func_count; i++) {
+                do_node_2(env, n->program.functions[i], funcs);
+            }
         } break;
     }
 }

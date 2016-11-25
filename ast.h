@@ -103,8 +103,8 @@ STRUCT(FuncDeclNode)
 
 STRUCT(ProgramNode)
 {
-    // Root of tree
-    char stub;
+    int func_count;
+    Node **functions;
 };
 
 STRUCT(BlockNode)
@@ -172,6 +172,9 @@ Node* make_funcdef(Node *name, Node *type, Node *block, int argument_count, Node
 // Remember to init the array to 0 and size to 0
 Node* make_block();
 void block_add_statement(Node *block, Node *stmt);
+
+Node* make_program();
+void program_add_func(Node *program, Node *func);
 
 void print_node(Node *n);
 

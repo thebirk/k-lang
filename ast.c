@@ -144,6 +144,22 @@ void block_add_statement(Node *b, Node *stmt)
     b->block.stmts[b->block.count-1] = stmt;
  }
 
+ Node* make_program()
+ {
+     Node *n = make_node(NODE_PROGRAM);
+     
+     n->program.func_count = 0;
+     n->program.functions = 0;
+     
+     return n;
+ }
+ 
+ void program_add_func(Node *program, Node *func)
+ {
+     program->program.func_count++;
+     program->program.functions = (Node**) realloc(program->program.functions, sizeof(Node*) * program->program.func_count);
+     program->program.functions[program->program.func_count-1] = func;
+}
 
 static void print_indents(int n)
 {

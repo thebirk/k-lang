@@ -86,6 +86,20 @@ LexResult lex_file_data(char *data, const char *filename)
 #define make_token(type) make_token_(type, line, x, result.filename)
     char *ptr = data;
     while(*ptr) {
+        
+        if(*ptr == '/' && *(ptr+1) == '/') {
+            ptr += 2;
+            while(*ptr && (*ptr != '\n')) {
+                ptr++;
+            }
+            if(*ptr == 0) continue;
+            ptr++;
+            if(*ptr == 0) continue;
+            x = 1;
+            line++;
+            continue;
+        }
+        
         if(*ptr == '\r') {
             ptr++;
             continue;
@@ -103,20 +117,6 @@ LexResult lex_file_data(char *data, const char *filename)
             ptr++;
             continue;
         }
-        
-        if(*ptr == '/' && *(ptr+1) == '/') {
-            ptr += 2;
-            while(*ptr && (*ptr != '\n')) {
-                ptr++;
-            }
-            if(*ptr == 0) continue;
-            ptr++;
-            if(*ptr == 0) continue;
-            ptr++;
-            x = 1;
-            line++;
-            continue;
-           }
         
         // Double tokens
         if(*ptr == '=' && *(ptr+1) == '=') {
