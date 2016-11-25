@@ -43,6 +43,8 @@ Node* make_binopnode(BinOpType type, Node *lhs, Node *rhs)
     n->binop.type = type;
     n->binop.lhs = lhs;
     n->binop.rhs = rhs;
+    
+    return n;
 }
 
 static void print_indents(int n)

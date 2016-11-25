@@ -1,5 +1,6 @@
 #ifndef K_AST_H
 #define K_AST_H
+#include "lexer.h"
 
 ENUM(int, NodeType)
 {
@@ -86,6 +87,7 @@ STRUCT(FuncDefNode)
 STRUCT(ProgramNode)
 {
     // Root of tree
+    char stub;
 };
 
 STRUCT(Node)
