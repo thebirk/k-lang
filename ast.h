@@ -12,7 +12,10 @@ ENUM(int, NodeType)
     NODE_FUNCCALL,
     NODE_VARDECL,
     NODE_VARASSIGN,
+    NODE_VARDECLASSIGN,
     NODE_PROGRAM,
+    NODE_BLOCK,
+    NODE_WHILE,
 };
 
 ENUM(int, BinOpType)
@@ -63,6 +66,13 @@ STRUCT(VarAssignNode)
     Node *expr;
 };
 
+STRUCT(VarDeclAssignNode)
+{
+    char *type;
+    char *var;
+    Node *expr;
+};
+
 STRUCT(FuncCallNode)
 {
     char *func_name;
@@ -72,7 +82,7 @@ STRUCT(FuncCallNode)
 STRUCT(FuncDeclNode)
 {
     char *name;
-    char *type; // TODO: Does 0 == void or does "void" == void
+    char *type;
     // TODO: Store argument count, type, and names
     Node *block; // Use blocks or arrays of stmts?
 };
@@ -90,6 +100,18 @@ STRUCT(ProgramNode)
     char stub;
 };
 
+STRUCT(BlockNode)
+{
+    Node **stmts;
+    int count;
+};
+
+STRUCT(WhileNode)
+{
+    Node *condition;
+    Node *block;
+};
+
 STRUCT(Node)
 {
     NodeType type;
@@ -100,16 +122,26 @@ STRUCT(Node)
         IdentNode ident;
         VarDeclNode vardecl;
         VarAssignNode varassign;
+        VarDeclAssignNode vardeclassign;
         FuncCallNode funccall;
         FuncDeclNode funcdecl;
         FuncDefNode funcdec;
         ProgramNode program;
+        BlockNode block;
+        WhileNode nwhile;
     };
 };
 
 Node* make_node(NodeType type);
 Node* make_identnode(Token t);
+Node* make_declassign(Token var, char *type, Node *expr);
+Node* make_assignment(Token var, Node *expr);
+Node* make_while(Node *cond, Node *block);
 
- void print_node(Node *n);
+// Remember to init the array to 0 and size to 0
+Node* make_block();
+void block_add_statement(Node *block, Node *stmt);
+
+void print_node(Node *n);
 
 #endif /* K_AST_H */
