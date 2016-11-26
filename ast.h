@@ -18,6 +18,7 @@ ENUM(int, NodeType)
     NODE_WHILE,
     NODE_IF,
     NODE_TYPE,
+    NODE_RETURN,
 };
 
 ENUM(int, BinOpType)
@@ -136,6 +137,11 @@ STRUCT(TypeNode)
     Node **array_expr;
 };
 
+STRUCT(ReturnNode)
+{
+    Node *expr;
+};
+
 STRUCT(Node)
 {
     NodeType type;
@@ -155,6 +161,7 @@ STRUCT(Node)
         WhileNode nwhile;
         IfNode nif;
         TypeNode ntype;
+        ReturnNode nreturn;
     };
 };
 
@@ -165,6 +172,7 @@ Node* make_declassign(Token var, Node *type, Node *expr);
 Node* make_assignment(Token var, Node *expr);
 Node* make_while(Node *cond, Node *block);
 Node* make_if(Node *cond, Node *block, Node *else_block);
+Node* make_return(Node *expr);
 
 Node* make_funcdecl(Node *name, Node *type, int argument_count, Node **argument_idents, Node **argument_types);
 Node* make_funcdef(Node *name, Node *type, Node *block, int argument_count, Node **argument_idents, Node **argument_types);

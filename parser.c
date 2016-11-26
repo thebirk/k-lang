@@ -204,7 +204,17 @@ Node* statement_semicolon()
         } else {
             error("Expected ':', '=' or '(' after ident!");
         }
+    } else if(accept(TOKEN_RETURN)) {
+        if(accept(TOKEN_SEMICOLON)) {
+            return make_return(0);
+        } else {
+            Node *expr = expression();
+            expect(TOKEN_SEMICOLON, "Expected ';' after return expression!");
+            return make_return(expr);
+        }
     }
+    
+    error("Nope");
 }
 
 Node* statement()

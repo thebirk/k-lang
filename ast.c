@@ -78,6 +78,15 @@ Node* make_assignment(Token var, Node *expr)
     return n;
 }
 
+Node* make_return(Node *expr)
+{
+    Node *n = make_node(NODE_RETURN);
+    
+    n->nreturn.expr = expr;
+    
+    return n;
+}
+
 Node* make_funcdecl(Node *name, Node *type, int argument_count, Node **argument_idents, Node **argument_types)
 {
     Node *n = make_node(NODE_FUNCDECL);

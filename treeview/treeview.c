@@ -384,6 +384,20 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
                 do_node_2(env, n->program.functions[i], funcs);
             }
         } break;
+        case NODE_RETURN: {
+            jobject obj = create_java_node(env);
+            set_java_node_value(env, obj, "Return");
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
+            
+            if(n->nreturn.expr) {
+                jobject expr = create_java_node(env);
+                set_java_node_value(env, expr, "Expr");
+                set_java_node_parent(env, expr, obj);
+                add_java_node_child(env, obj, expr);
+                do_node_2(env, n->nreturn.expr, expr);
+            }
+        } break;
     }
 }
 
