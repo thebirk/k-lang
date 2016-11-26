@@ -420,6 +420,28 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
                 do_node_2(env, n->nreturn.expr, expr);
             }
         } break;
+        case NODE_ARRAY_INDEX: {
+            jobject obj = create_java_node(env);
+            set_java_node_value(env, obj, "Array index");
+            set_java_node_parent(env, obj, parent);
+            add_java_node_child(env, parent, obj);
+            
+            jobject var = create_java_node(env);
+            snprintf(buffer, BSIZE, "Variable: %s", n->array_index.ident->ident.value);
+            set_java_node_value(env, var, buffer);
+            set_java_node_parent(env, var, obj);
+            add_java_node_child(env, obj, var);
+            
+            jobject indexes = create_java_node(env);
+            snprintf(buffer, BSIZE, "Indexes: %d", n->array_index.expr_count);
+            set_java_node_value(env, indexes, buffer);
+            set_java_node_parent(env, indexes, obj);
+            add_java_node_child(env, obj, indexes);
+            
+            for(int i = 0; i < n->array_index.expr_count; i++) {
+                do_node_2(env, n->array_index.expressions[i], indexes);
+            }
+        } break;
     }
 }
 

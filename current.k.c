@@ -28,7 +28,7 @@ func add(a: int, b: int): int
 func main()
 {
 	arr: *int = malloc(100);
-	//arr[12] = 123;
-	add(10, 12);
+	//arr[10] = 123;
+    add(arr[10][12], 12);
 	return;
 }

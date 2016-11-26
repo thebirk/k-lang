@@ -51,6 +51,7 @@ Node* factor()
             Node *f = make_node(NODE_FUNCCALL);
             f->funccall.func_name = make_identnode(current);
             f->funccall.argument_count = 0;
+            f->funccall.arguments = 0;
             
             do {
                 Node *expr = expression();
@@ -61,6 +62,24 @@ Node* factor()
             expect(TOKEN_RIGHTPAR, "Expected ')' after paramaters in function call!");
             
             return f;
+        } else if(accept(TOKEN_LEFTBRACKET)) {
+            
+            Node *n = make_node(NODE_ARRAY_INDEX);
+            n->array_index.expr_count = 0;
+            n->array_index.expressions = 0;
+            
+            n->array_index.ident = make_identnode(current);
+            
+            do {
+                Node *expr = expression();
+                expect(TOKEN_RIGHTBRACKET, "Expected ']' while parsing array indexing!");
+                
+                n->array_index.expr_count++;
+                n->array_index.expressions = realloc(n->array_index.expressions, sizeof(Node*) * n->array_index.expr_count);
+                n->array_index.expressions[n->array_index.expr_count-1] = expr;
+            } while(accept(TOKEN_LEFTBRACKET));
+            
+            return n;
         } else {
         return make_identnode(current);
         }
@@ -214,6 +233,7 @@ Node* statement_semicolon()
             Node *f = make_node(NODE_FUNCCALL);
             f->funccall.func_name = make_identnode(current);
             f->funccall.argument_count = 0;
+            f->funccall.arguments = 0;
             
             do {
                 Node *expr = expression();

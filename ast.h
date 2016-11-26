@@ -19,6 +19,7 @@ ENUM(int, NodeType)
     NODE_IF,
     NODE_TYPE,
     NODE_RETURN,
+    NODE_ARRAY_INDEX,
 };
 
 ENUM(int, BinOpType)
@@ -142,6 +143,13 @@ STRUCT(ReturnNode)
     Node *expr;
 };
 
+STRUCT(ArrayIndexNode)
+{
+    Node *ident;
+    int expr_count;
+    Node **expressions;
+};
+
 STRUCT(Node)
 {
     NodeType type;
@@ -162,6 +170,7 @@ STRUCT(Node)
         IfNode nif;
         TypeNode ntype;
         ReturnNode nreturn;
+        ArrayIndexNode array_index;
     };
 };
 

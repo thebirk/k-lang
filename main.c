@@ -58,7 +58,7 @@ void print_lex_result(LexResult result)
 
 int main(int argc, char **argv)
 {
-    LexResult result = lex_file("current.k");
+    LexResult result = lex_file("current.k.c");
     
     Node *program = parse(result);
     
