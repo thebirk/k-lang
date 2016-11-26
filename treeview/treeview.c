@@ -216,6 +216,28 @@ void do_node_2(JNIEnv *env, Node *n, jobject parent)
             set_java_node_value(env, obj, "Funccall");
             set_java_node_parent(env, obj, parent);
             add_java_node_child(env, parent, obj);
+            
+            jobject name = create_java_node(env);
+            snprintf(buffer, BSIZE, "Name: %s", n->funccall.func_name->ident.value);
+            set_java_node_value(env, name, buffer);
+            set_java_node_parent(env, name, obj);
+            add_java_node_child(env, obj, name);
+            
+            jobject args = create_java_node(env);
+            snprintf(buffer, BSIZE, "Arguments: %d", n->funccall.argument_count);
+            set_java_node_value(env, args, buffer);
+            set_java_node_parent(env, args, obj);
+            add_java_node_child(env, obj, args);
+            
+            for(int i = 0; i < n->funccall.argument_count; i++) {
+                jobject arg = create_java_node(env);
+                snprintf(buffer, BSIZE, "Arg: #%d", i+1);
+                set_java_node_value(env, arg, buffer);
+                set_java_node_parent(env, arg, args);
+                add_java_node_child(env, args, arg);
+                
+                do_node_2(env, n->funccall.arguments[i], arg);
+            }
         } break;
         case NODE_VARDECL: {
             jobject obj = create_java_node(env);

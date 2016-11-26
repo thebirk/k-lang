@@ -1,6 +1,15 @@
 func add(a: int, b: int): int return a + b;
 func sub(a: int, b: int): int return a - b;
 
+func factorial(n: int): int
+{
+	if n {
+		return 1;
+	} else {
+		return n*factorial(n-1);
+	}
+}
+
 func mul(a: int, b: int): int;
 
 func add(a: int, b: int): int
@@ -18,6 +27,8 @@ func add(a: int, b: int): int
 // Inferred to be of return void
 func main()
 {
-	//arr: *int = malloc(100);
-	
+	arr: *int = malloc(100);
+	//arr[12] = 123;
+	add(10, 12);
+	return;
 }

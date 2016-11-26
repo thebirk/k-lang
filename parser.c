@@ -48,7 +48,19 @@ Node* factor()
      Token current = __current;
     if(accept(TOKEN_IDENT)) {
         if(accept(TOKEN_LEFTPAR)) {
-            // Parse func call
+            Node *f = make_node(NODE_FUNCCALL);
+            f->funccall.func_name = make_identnode(current);
+            f->funccall.argument_count = 0;
+            
+            do {
+                Node *expr = expression();
+                f->funccall.argument_count++;
+                f->funccall.arguments = realloc(f->funccall.arguments, sizeof(Node*) * f->funccall.argument_count);
+                f->funccall.arguments[f->funccall.argument_count-1] = expr;
+            } while(accept(TOKEN_COMMA));
+            expect(TOKEN_RIGHTPAR, "Expected ')' after paramaters in function call!");
+            
+            return f;
         } else {
         return make_identnode(current);
         }
@@ -199,8 +211,19 @@ Node* statement_semicolon()
             expect(TOKEN_SEMICOLON, "Expected semicolon!");
             return make_assignment(current, expr);
         } else if(accept(TOKEN_LEFTPAR)) {
-            // TODO: Parse arguments
-            // do while style is probably the best
+            Node *f = make_node(NODE_FUNCCALL);
+            f->funccall.func_name = make_identnode(current);
+            f->funccall.argument_count = 0;
+            
+            do {
+                Node *expr = expression();
+                f->funccall.argument_count++;
+                f->funccall.arguments = realloc(f->funccall.arguments, sizeof(Node*) * f->funccall.argument_count);
+                f->funccall.arguments[f->funccall.argument_count-1] = expr;
+            } while(accept(TOKEN_COMMA));
+            expect(TOKEN_RIGHTPAR, "Expected ')' after paramaters in function call!");
+            expect(TOKEN_SEMICOLON, "Expected ';' after function call!");
+            return f;
         } else {
             error("Expected ':', '=' or '(' after ident!");
         }

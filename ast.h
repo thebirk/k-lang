@@ -78,7 +78,7 @@ STRUCT(VarDeclAssignNode)
 
 STRUCT(FuncCallNode)
 {
-    char *func_name;
+     Node *func_name;
     int argument_count;
     Node **arguments;
 };
