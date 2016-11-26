@@ -1,2 +1,10 @@
 @echo off
-cl /DHAS_JAVA_TREEVIEW /Feklc /I "C:/Program Files/Java/jdk1.8.0_111/include" /I "C:/Program Files/Java/jdk1.8.0_111/include/win32" main.c jvm.lib /link /LIBPATH:"C:/Program Files/Java/jdk1.8.0_111/lib"
+setlocal
+JNI_INCLUDE=%JAVA_HOME%/include
+JNI_INCLUDE_WIN32=%JAVA_HOME%/include/win32
+JNI_LIBRARY=%JAVA_HOME%/jre/lib/amd64/server
+
+
+cl /DHAS_JAVA_TREEVIEW /Feklc /I %JNI_INCLUDE% /I JNI_INCLUDE_WIN32 main.c jvm.lib /link /LIBPATH:%JNI_LIBRARY_PATH%
+
+endlocal
