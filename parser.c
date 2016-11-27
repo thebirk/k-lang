@@ -53,6 +53,10 @@ Node* factor()
             f->funccall.argument_count = 0;
             f->funccall.arguments = 0;
             
+            if(accept(TOKEN_RIGHTPAR)) {
+                return f;
+            }
+            
             do {
                 Node *expr = expression();
                 f->funccall.argument_count++;
@@ -235,6 +239,10 @@ Node* statement_semicolon()
             f->funccall.argument_count = 0;
             f->funccall.arguments = 0;
             
+            if(accept(TOKEN_RIGHTPAR)) {
+                expect(TOKEN_SEMICOLON, "Expected ';' after function call!");
+                return f;
+            }
             do {
                 Node *expr = expression();
                 f->funccall.argument_count++;

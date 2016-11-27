@@ -36,6 +36,7 @@ freely, subject to the following restrictions:
 #ifdef HAS_JAVA_TREEVIEW
 #include "treeview/treeview.c"
 #endif /* HAS_JAVA_TREEVIEW */
+#include "llvm-gen/llvm-gen.c"
 
 void print_lex_result(LexResult result)
 {
@@ -63,10 +64,12 @@ int main(int argc, char **argv)
     Node *program = parse(result);
     
     #ifdef HAS_JAVA_TREEVIEW
-    view_ast(program);
+    //view_ast(program);
     #else
     print_node(program);
     #endif /* HAS_JAVA_TREEVIEW */
+    
+    llvm_gen(program, "out.bc");
     
     return 0;
 }
