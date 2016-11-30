@@ -1,16 +1,16 @@
 #include "semantics.h"
 
-void check_globals(Node *program)
+void check_globals(Node *program, TypeSystem *ts)
 {
     
 }
 
-void check_functions(Node *np)
+void check_functions(Node *np, TypeSystem *ts)
 {
     ProgramNode *program = &np->program;
     // Check return types
-    for(int i = 0; i < program->program.func_count; i++) {
-        Node *n = program->program.functions[i];
+    for(int i = 0; i < program->func_count; i++) {
+        Node *n = program->functions[i];
         
         if(n->type == NODE_FUNCDEF) {
             
@@ -29,6 +29,6 @@ void check_functions(Node *np)
 
 void type_check(Node *program, TypeSystem *ts)
 {
-    check_globals(Node *program);
-    check_functions(Node *program);
+    check_globals(program, ts);
+    check_functions(program, ts);
 }

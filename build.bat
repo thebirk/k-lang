@@ -18,7 +18,7 @@ REM for /f "tokens=*" %%x IN ('"llvm-config --ldflags core"') DO set LLVM_LDFLAG
 REM for /f "tokens=*" %%x IN ('"llvm-config --cflags core"') DO set LLVM_CFLAGS=%%x
 for /f "tokens=*" %%x IN ('"llvm-config --libnames core engine analysis interpreter"') DO set LLVM_LIBS=%%x
 
-cl /Zi /DHAS_JAVA_TREEVIEW /Feklc %LLVM_CFLAGS% /I %JNI_INCLUDE% /I %JNI_INCLUDE_WIN32% main.c jvm.lib %LLVM_LIBS% /link /LIBPATH:%JNI_LIBRARY% %LLVM_LDFLAGS%
+cl /Zi /DHAS_JAVA_TREEVIEW /Feklc %LLVM_CFLAGS% /I %JNI_INCLUDE% /I %JNI_INCLUDE_WIN32% src/main.c jvm.lib %LLVM_LIBS% /link /LIBPATH:%JNI_LIBRARY% %LLVM_LDFLAGS%
 ctime\ctime -end buildstats.ctm %errorlevel%
 
 endlocal
