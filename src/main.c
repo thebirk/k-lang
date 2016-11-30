@@ -37,6 +37,7 @@ freely, subject to the following restrictions:
 #include "treeview/treeview.c"
 #endif /* HAS_JAVA_TREEVIEW */
 #include "typesystem.c"
+#include "semantics.c"
 #include "llvm-gen/llvm-gen.c"
 
 void print_lex_result(LexResult result)
@@ -73,6 +74,8 @@ int main(int argc, char **argv)
     TypeSystem ts = {0};
     typesys_init(&ts);
     add_default_types(&ts);
+    
+    type_check(program, &ts);
     
     llvm_gen(program, "out.bc");
     

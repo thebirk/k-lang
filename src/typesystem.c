@@ -71,6 +71,15 @@ static TypeDef create_double_type()
     return def;
 }
 
+static TypeDef create_void_type()
+{
+    TypeDef def = {0};
+    
+    def.type = TYPE_VOID;
+    
+    return def;
+}
+
 void add_default_types(TypeSystem *ts)
 {
     typesys_add_type(ts, create_int_type("u8", 8, 0));
@@ -93,4 +102,6 @@ void add_default_types(TypeSystem *ts)
     
     typesys_add_type(ts, create_double_type());
     typesys_add_type(ts, create_alias_type("double", "f64"));
+    
+    typesys_add_type(ts, create_void_type());
 }

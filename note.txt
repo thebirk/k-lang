@@ -1,0 +1,10 @@
+## General
+
+Add some sort of concept of modules
+That is one file is a module
+A file can reference/import other modules to access their
+data. On compilation all modules referenced will be "linked"
+together.
+
+## Semantics
+

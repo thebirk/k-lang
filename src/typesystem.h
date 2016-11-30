@@ -7,6 +7,7 @@ ENUM(int, TypeDefType)
     TYPE_INTEGER = 0,
     TYPE_FLOAT,
     TYPE_ALIAS,
+    TYPE_VOID,
     TYPE_STRUCT,
 };
 
