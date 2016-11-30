@@ -1,5 +1,6 @@
 @echo off
 setlocal
+ctime\ctime -begin buildstats.ctm
 set JNI_INCLUDE="%JAVA_HOME%/include"
 set JNI_INCLUDE_WIN32="%JAVA_HOME%/include/win32"
 set JNI_LIBRARY="%JAVA_HOME%/lib"
@@ -18,5 +19,6 @@ REM for /f "tokens=*" %%x IN ('"llvm-config --cflags core"') DO set LLVM_CFLAGS=
 for /f "tokens=*" %%x IN ('"llvm-config --libnames core engine analysis interpreter"') DO set LLVM_LIBS=%%x
 
 cl /Zi /DHAS_JAVA_TREEVIEW /Feklc %LLVM_CFLAGS% /I %JNI_INCLUDE% /I %JNI_INCLUDE_WIN32% main.c jvm.lib %LLVM_LIBS% /link /LIBPATH:%JNI_LIBRARY% %LLVM_LDFLAGS%
+ctime\ctime -end buildstats.ctm %errorlevel%
 
 endlocal

@@ -203,11 +203,11 @@ void llvm_gen(Node *n, char *path)
     }
     LLVMDisposeMessage(error);
     
-    /*
+    LLVMWriteBitcodeToFile(llvm.module, path);
+    
     LLVMExecutionEngineRef engine;
     error = 0;
     LLVMLinkInInterpreter();
-    LLVMInitializeNativeTarget();
     ret = LLVMCreateExecutionEngineForModule(&engine, llvm.module, &error);
     if(ret != 0) {
         printf("Failed to create execution engine!\n");
@@ -222,10 +222,7 @@ void llvm_gen(Node *n, char *path)
     LLVMValueRef main = LLVMGetNamedFunction(llvm.module, "main");
     LLVMGenericValueRef result = LLVMRunFunction(engine, main, 0, 0);
     printf("%lld\n", LLVMGenericValueToInt(result, 0));
-    */
-    
-    LLVMWriteBitcodeToFile(llvm.module, path);
-    
+     
     LLVMDisposeModule(llvm.module);
     LLVMDisposeBuilder(llvm.builder);
     LLVMContextDispose(llvm.context);

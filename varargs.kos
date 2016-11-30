@@ -1,0 +1,53 @@
+import "clib";
+
+func printf(format: *i8, ...): s32;
+
+func strlen(str: *u8): u32
+{
+	size := 0;
+	while *str {
+		str++;
+		size++;
+	}
+	return size;
+}
+
+FILE_MAGIC := 0xADAFABAC;
+
+struct[packed] FileHeader
+{
+	magic: u32;
+	name_len: u8;
+	name: *u8;
+}
+
+struct FILE
+{
+	stub: u8;
+}
+
+func [header: FileHeader] write_to_file(path: *u8)
+{
+	f: *FILE = fopen();
+}
+
+func make_header(name: *u8): FileHeader
+{
+	header: FileHeader;
+	header.magic = FILE_MAGIC;
+	header.name_len = strlen(name);
+
+	header.name = malloc(header.name_len);
+	i := 0;
+	while i < header.name_len {
+		header.name[i] = name[i];
+		i++;
+	}
+
+	return header;
+}
+
+func main()
+{
+	printf("Hello, world!\n");
+}
