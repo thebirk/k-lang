@@ -207,6 +207,7 @@ void llvm_gen(Node *n, char *path)
     
     LLVMExecutionEngineRef engine;
     error = 0;
+    LLVMInitializeNativeTarget();
     LLVMLinkInInterpreter();
     ret = LLVMCreateExecutionEngineForModule(&engine, llvm.module, &error);
     if(ret != 0) {
